@@ -1,10 +1,14 @@
 import { FeedBack } from "../types/word.type";
 
 export class Wordle {
-    word:string
+    private word:string
 
     constructor(word:string) {
         this.word = word.toUpperCase();
+    }
+
+    getWordLength(){
+        return this.word.length
     }
 
     checkAnswer(inputWord:string):FeedBack[] | null {

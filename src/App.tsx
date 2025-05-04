@@ -3,7 +3,7 @@ import { InputWord } from "./components/InputWord"
 import { Word } from "./types/word.type"
 import { Wordle } from "./classes/Wordle";
 
-const wordle = new Wordle("SaLas")
+const wordle = new Wordle("largas")
 function App() {
   const [words, setWords] = useState<Word[]>(
     Array.from({ length: 5 }, () => ({
@@ -30,7 +30,7 @@ function App() {
 
   const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (words[activeWord].word.length !== 5) return
+    if (words[activeWord].word.length !== wordle.getWordLength()) return
 
     setWords(prev => {
       const newWords = [...prev]
@@ -48,7 +48,7 @@ function App() {
         <form onSubmit={handleSubmit} action="submit">
           <input className="border border-white text-white"
             type="text"
-            maxLength={5}
+            maxLength={wordle.getWordLength()}
             value={words[activeWord].word}
             onChange={handleChangeInput}
           />
@@ -56,7 +56,7 @@ function App() {
 
         <section className="flex flex-col gap-2 mt-30">
           {words.map((word, index) => (
-            <InputWord key={index} word={word} />
+            <InputWord key={index} word={word} length={wordle.getWordLength()}/>
           ))}
 
         </section>
