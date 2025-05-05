@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Word } from '../types/word.type';
 import { Wordle } from '../classes/Wordle';
-import { isAlphabet } from '../App';
 import { InputWord } from './InputWord';
 
 export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
@@ -15,6 +14,7 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
     );
 
     useEffect(() => {
+        console.log("montado")
         const handleClick = () => {
             inputRef.current?.focus();
         };
@@ -25,6 +25,7 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
 
         return () => {
             document.removeEventListener("click", handleClick);
+            console.log("desmontado")
         };
     }, []);
 
@@ -74,4 +75,7 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
             </div>
         </>
     )
+}
+export function isAlphabet(str: string) {
+    return /^([a-zA-Z]*)$/.test(str);
 }

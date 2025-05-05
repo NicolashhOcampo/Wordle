@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { isAlphabet } from "../App"
+import { isAlphabet } from "./PlayWordle"
 
 export const CreateWordle = ({ setWord }: { setWord: (newWord: string) => void }) => {
     const [inputValue, setInputValue] = useState("")
@@ -10,28 +10,45 @@ export const CreateWordle = ({ setWord }: { setWord: (newWord: string) => void }
         setInputValue(newString)
     }
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+    const handlePlay = () => {
 
         if (!isAlphabet(inputValue)) return
 
         setWord(inputValue)
     }
 
+    const handleCreateLink = ()=>{
+        console.log("Link creado")
+    }
+
     return (
-        <div className="w-120 mx-auto border bg-gray-600 rounded-xl p-4">
-            <h2 className="text-center text-white text-2xl font-semibold uppercase">Ingrese una palabra para jugar</h2>
-            <form className="mt-5 flex flex-col items-center gap-2" action="" onSubmit={handleSubmit}>
+        <div className="w-80 h-80 flex flex-col justify-center mx-auto border bg-gray-600 rounded-xl p-4">
+            <h2 className="text-center text-white text-2xl font-semibold uppercase">Ingrese una palabra</h2>
+            
+            <div className="mt-auto flex flex-col items-center gap-2">
+                <p className="mt-8 text-center text-white">Maximos de 8 letras</p>
                 <input 
                 type="text" 
                 value={inputValue} 
                 maxLength={8}
                 onChange={handleChangeInput}
-                className="border text-white rounded-2xl w-6/10 h-10 pl-2 text-xl" />
-                <button type="submit"
+                className="border-2 text-white rounded-2xl bg-gray-700 w-6/10 h-10 pl-3 text-xl focus:border-green-700 focus:outline-none transition-colors duration-300" />
+                <button
+                    onClick={handlePlay}
                     className="mt-8 border text-white rounded-2xl bg-green-500 w-30 h-10 cursor-pointer"
                 >JUGAR!</button>
-            </form>
+
+                <div className="w-full flex items-center gap-1">
+                    <div className="flex-1 h-0.25 bg-white" />
+                    <span className="text-white">O</span>
+                    <div className="flex-1 h-0.25 bg-white" />
+                </div>
+
+                <button
+                    onClick={handleCreateLink}
+                    className="border text-white rounded-2xl bg-blue-500 w-30 h-10 cursor-pointer"
+                >Generar Link</button>
+            </div>
         </div>
 
     )
