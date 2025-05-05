@@ -11,6 +11,10 @@ export class Wordle {
         return this.word.length
     }
 
+    setWord(newWord:string){
+        this.word = newWord
+    }
+
     checkAnswer(inputWord:string):FeedBack[] | null {
         if(this.word.length !== inputWord.length){
             return null

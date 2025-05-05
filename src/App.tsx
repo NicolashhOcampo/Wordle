@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { InputWord } from "./components/InputWord"
 import { Word } from "./types/word.type"
 import { Wordle } from "./classes/Wordle";
+import { CreateWordle } from "./components/CreateWordle";
 
-const wordle = new Wordle("largas")
 function App() {
+  const [secretWord, setSecretWord] = useState("");
+  const wordle = useMemo(() => new Wordle(secretWord), [secretWord]);
   const [words, setWords] = useState<Word[]>(
     Array.from({ length: 5 }, () => ({
       word: "",
@@ -42,6 +44,15 @@ function App() {
     }
     
   }
+
+  if (wordle.getWordLength() === 0){
+    return(
+      <div className="w-full h-full flex justify-center items-center">
+        <CreateWordle setWord={setSecretWord}/>
+      </div>
+    )
+  }
+
   return (
     <>
       <div className="w-120 mx-auto border ">
@@ -65,7 +76,7 @@ function App() {
   )
 }
 
-function isAlphabet(str: string) {
+export function isAlphabet(str: string) {
   return /^([a-zA-Z]*)$/.test(str);
 }
 
