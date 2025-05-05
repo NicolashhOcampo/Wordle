@@ -16,12 +16,19 @@ function App() {
   );
   const [activeWord, setActiveWord] = useState(0)
 
-  useEffect(()=>{
-    inputRef.current?.focus()
-    document.addEventListener("click", ()=>{
-      inputRef.current?.focus()
-    })
-  }, [secretWord])
+  useEffect(() => {
+    const handleClick = () => {
+      inputRef.current?.focus();
+    };
+  
+    document.addEventListener("click", handleClick);
+  
+    inputRef.current?.focus();
+  
+    return () => {
+      document.removeEventListener("click", handleClick);
+    };
+  }, [secretWord]);
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newString = event.target.value.toUpperCase()
