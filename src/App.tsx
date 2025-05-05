@@ -1,11 +1,12 @@
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import { InputWord } from "./components/InputWord"
 import { Word } from "./types/word.type"
 import { Wordle } from "./classes/Wordle";
 import { CreateWordle } from "./components/CreateWordle";
 
 function App() {
-  const [secretWord, setSecretWord] = useState("");
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  const [secretWord, setSecretWord] = useState("aeiou");
   const wordle = useMemo(() => new Wordle(secretWord), [secretWord]);
   const [words, setWords] = useState<Word[]>(
     Array.from({ length: 5 }, () => ({
@@ -16,9 +17,11 @@ function App() {
   const [activeWord, setActiveWord] = useState(0)
 
   useEffect(()=>{
-    
-    
-  }, [])
+    inputRef.current?.focus()
+    document.addEventListener("click", ()=>{
+      inputRef.current?.focus()
+    })
+  }, [secretWord])
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newString = event.target.value.toUpperCase()
@@ -57,7 +60,8 @@ function App() {
     <>
       <div className="w-120 mx-auto border ">
         <form onSubmit={handleSubmit} action="submit">
-          <input className="border border-white text-white"
+          <input className="border border-white text-white sr-only"
+            ref={inputRef}
             type="text"
             maxLength={wordle.getWordLength()}
             value={words[activeWord].word}

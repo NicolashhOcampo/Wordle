@@ -37,11 +37,13 @@ export class Wordle {
                 feedback.push("misplaced")
             }
         })
-
+        console.log("feedback antes: ", feedback)
         feedback.forEach((f, index) => {
             if(f === "misplaced"){
                 if(copy_word_list.includes(inputWord[index])){
-                    copy_word_list[index] = "-"
+                    console.log("letra: ", inputWord[index])
+                    const indexLetter = copy_word_list.findIndex((letter)=>(letter === inputWord[index]))
+                    copy_word_list[indexLetter] = "-"
                 }else{
                     feedback[index] = "wrong"
                 }
