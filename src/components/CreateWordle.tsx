@@ -1,7 +1,9 @@
 import { useState } from "react"
-import { isAlphabet } from "./PlayWordle"
+import { useNavigate } from "react-router";
+import { isAlphabet } from "../utils/stringUtils";
 
-export const CreateWordle = ({ setWord }: { setWord: (newWord: string) => void }) => {
+export const CreateWordle = () => {
+    const navigate = useNavigate();
     const [inputValue, setInputValue] = useState("")
 
     const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -14,7 +16,7 @@ export const CreateWordle = ({ setWord }: { setWord: (newWord: string) => void }
 
         if (!isAlphabet(inputValue)) return
 
-        setWord(inputValue)
+        navigate(`/playCustom/${inputValue}`)
     }
 
     const handleCreateLink = ()=>{
@@ -22,6 +24,7 @@ export const CreateWordle = ({ setWord }: { setWord: (newWord: string) => void }
     }
 
     return (
+        <div className="w-full h-full flex justify-center items-center">
         <div className="w-80 h-80 flex flex-col justify-center mx-auto border bg-gray-600 rounded-xl p-4">
             <h2 className="text-center text-white text-2xl font-semibold uppercase">Ingrese una palabra</h2>
             
@@ -50,6 +53,6 @@ export const CreateWordle = ({ setWord }: { setWord: (newWord: string) => void }
                 >Generar Link</button>
             </div>
         </div>
-
+        </div>
     )
 }

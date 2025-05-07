@@ -10,14 +10,14 @@ function App() {
   if (wordle.getWordLength() === 0) {
     return (
       <div className="w-full h-full flex justify-center items-center">
-        <CreateWordle setWord={setSecretWord} />
+        <CreateWordle  />
       </div>
     )
   }
 
   return (
     <>
-      <PlayWordle wordle={wordle} />
+      <PlayWordle />
     </>
   )
 }
