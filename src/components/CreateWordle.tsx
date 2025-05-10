@@ -1,7 +1,8 @@
 import { useState } from "react"
 import { useNavigate } from "react-router";
 import { isAlphabet } from "../utils/stringUtils";
-
+import { vigenere } from "../utils/vigenere";
+const secretKey:string = import.meta.env.VITE_SECRET_KEY;
 export const CreateWordle = () => {
     const navigate = useNavigate();
     const [inputValue, setInputValue] = useState("")
@@ -16,7 +17,9 @@ export const CreateWordle = () => {
 
         if (!isAlphabet(inputValue)) return
 
-        navigate(`/playCustom/${inputValue}`)
+
+        
+        navigate(`/playCustom/${vigenere(inputValue, secretKey)}`)
     }
 
     const handleCreateLink = ()=>{

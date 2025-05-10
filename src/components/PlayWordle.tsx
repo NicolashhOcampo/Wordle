@@ -2,13 +2,11 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Word } from '../types/word.type';
 import { Wordle } from '../classes/Wordle';
 import { InputWord } from './InputWord';
-import { useNavigate, useParams } from 'react-router';
 import { isAlphabet } from '../utils/stringUtils';
+import { Modal } from './Modal';
 
-export const PlayWordle = () => {
-    const [wordle, setWordle] = useState<Wordle | null>(null)
-    const {word} = useParams()
-    const navigate = useNavigate()
+export const PlayWordle = ({wordle}:{wordle:Wordle}) => {
+
 
     const inputRef = useRef<HTMLInputElement | null>(null)
     const [activeWord, setActiveWord] = useState(0)
@@ -19,14 +17,14 @@ export const PlayWordle = () => {
         }))
     );
 
-    useEffect(() => {
-        if(!word || word.length < 1 || !isAlphabet(word)) {
-            console.log("No hay")
-            navigate("/create")
-            return
-        }
-        setWordle(new Wordle(word)) 
+    const getAllFeedbacks = (words: Word[]) => {
+        const feedbacks = words.map(word => word.feedback)
+        console.log(feedbacks)
+        return feedbacks.filter(feedback => feedback)
+    }
 
+    useEffect(() => {
+       
         console.log("montado")
         const handleClick = () => {
             inputRef.current?.focus();
@@ -41,6 +39,10 @@ export const PlayWordle = () => {
             console.log("desmontado")
         };
     }, []);
+
+    useEffect(()=>{
+         console.log(getAllFeedbacks(words))
+    }, [words])
 
     const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newString = event.target.value.toUpperCase()
@@ -86,6 +88,7 @@ export const PlayWordle = () => {
 
                 </section>
             </div>
+            {/* <Modal word='TOMAR' feedbacks={getAllFeedbacks(words)}/> */}
         </>
     )
 }
