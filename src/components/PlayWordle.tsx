@@ -8,13 +8,11 @@ import { Letter } from './Letter';
 import backspaceIcon from "../assets/backspace.svg";
 
 const initialKeyboardState = "qwertyuiopasdfghjklñzxcvbnm".split("").map(letter => ({
-    letter,
+    letter: letter.toUpperCase(),
     feedback: null
 }));
 
 export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
-
-
     const inputRef = useRef<HTMLInputElement | null>(null)
     const [activeWord, setActiveWord] = useState(0)
     const [words, setWords] = useState<Word[]>(
@@ -31,9 +29,9 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
     const row3 = letters.slice(20);     // Z - M
 
     const getAllFeedbacks = (words: Word[]) => {
-        const feedbacks = words.map(word => word.feedback)
+        const feedbacks =  words.filter(word => word.feedback)
         console.log(feedbacks)
-        return feedbacks.filter(feedback => feedback)
+        return words.map(word => word.feedback)
     }
 
     useEffect(() => {
@@ -58,13 +56,31 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
     }, [words])
 
     const checkWord = () => {
-           if (words[activeWord]?.word.length !== wordle?.getWordLength() || activeWord >= words.length) return
+        if (words[activeWord]?.word.length !== wordle?.getWordLength() || activeWord >= words.length) return
 
+        const newFeedback = wordle?.checkAnswer(words[activeWord].word)
         setWords(prev => {
             const newWords = [...prev]
-            newWords[activeWord].feedback = wordle?.checkAnswer(newWords[activeWord].word) ?? []
+            newWords[activeWord].feedback = newFeedback ?? []
             return newWords
         })
+
+        const newLetters = [...letters]
+
+        newFeedback?.forEach((feedback, index) => {
+            if(feedback == "match"){
+                const letterIndex = newLetters.findIndex( letter => letter.letter.toUpperCase() === words[activeWord].word[index].toUpperCase())
+                newLetters[letterIndex].feedback = "match"
+            }else{
+                const letterIndex = newLetters.findIndex( letter => letter.letter === words[activeWord].word[index])
+                if(!newLetters[letterIndex].feedback){
+                    newLetters[letterIndex].feedback = feedback
+                }
+            }
+        })
+
+        setLetters(newLetters)
+
         setActiveWord(prev => prev + 1)
     }
 
@@ -80,7 +96,7 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        
+
         checkWord()
 
     }

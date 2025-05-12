@@ -20,6 +20,7 @@ function App() {
   //     </div>
   //   )
   // }
+  if(wordle.getWordLength() < 1) return null
 
   return (
     <>
