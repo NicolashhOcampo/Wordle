@@ -1,0 +1,1 @@
+export type GameStatus = "IN_GAME" | "LOSE" | "WIN"

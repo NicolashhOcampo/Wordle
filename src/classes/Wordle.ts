@@ -15,13 +15,17 @@ export class Wordle {
         this.word = newWord
     }
 
-    checkAnswer(inputWord:string):FeedBack[] | null {
+    getWord(){
+        return this.word
+    }
+
+    checkAnswer(inputWord:string):[boolean, FeedBack[] | null] {
         if(this.word.length !== inputWord.length){
-            return null
+            return [false, null]
         }
 
         if(this.word.toUpperCase() === inputWord.toUpperCase()) {
-            return Array.from({length: this.word.length}, () => "match")
+            return [true, Array.from({length: this.word.length}, () => "match")]
         }
 
         const copy_word_list = this.word.toUpperCase().split("")
@@ -50,6 +54,6 @@ export class Wordle {
             }
         })
 
-        return feedback
+        return [false, feedback]
     }
 }

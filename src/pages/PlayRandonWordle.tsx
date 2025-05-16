@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react"
-import { Wordle } from "./classes/Wordle";
-import { PlayWordle } from "./components/PlayWordle";
+import { Wordle } from "../classes/Wordle";
+import { PlayWordle } from "../components/PlayWordle";
 
-function App() {
+function PlayRandomWordle() {
   const [secretWord, setSecretWord] = useState("");
   const wordle = useMemo(() => new Wordle(secretWord), [secretWord]);
 
@@ -13,22 +13,16 @@ function App() {
     .catch(e => {console.log(e), setSecretWord("error")})
   }, [])
 
-  // if (wordle.getWordLength() === 0) {
-  //   return (
-  //     <div className="w-full h-full flex justify-center items-center">
-  //       <CreateWordle  />
-  //     </div>
-  //   )
-  // }
+
   if(wordle.getWordLength() < 1) return null
 
   return (
     <>
-      <PlayWordle wordle={wordle}/>
+      <PlayWordle wordle={wordle}/>      
     </>
   )
 }
 
 
 
-export default App
+export default PlayRandomWordle

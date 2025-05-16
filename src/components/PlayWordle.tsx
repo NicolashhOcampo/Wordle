@@ -6,6 +6,8 @@ import { isAlphabet } from '../utils/stringUtils';
 import { Modal } from './Modal';
 import { Letter } from './Letter';
 import backspaceIcon from "../assets/backspace.svg";
+import { GameStatus } from '../types/gameStatus.type';
+import { Bounce, toast, ToastContainer } from 'react-toastify';
 
 const initialKeyboardState = "qwertyuiopasdfghjklñzxcvbnm".split("").map(letter => ({
     letter: letter.toUpperCase(),
@@ -14,6 +16,7 @@ const initialKeyboardState = "qwertyuiopasdfghjklñzxcvbnm".split("").map(letter
 
 export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
     const inputRef = useRef<HTMLInputElement | null>(null)
+    const [gameStatus, setGameStatus] = useState<GameStatus>("IN_GAME")
     const [activeWord, setActiveWord] = useState(0)
     const [words, setWords] = useState<Word[]>(
         Array.from({ length: 5 }, () => ({
@@ -29,7 +32,7 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
     const row3 = letters.slice(20);     // Z - M
 
     const getAllFeedbacks = (words: Word[]) => {
-        const feedbacks =  words.filter(word => word.feedback)
+        const feedbacks = words.filter(word => word.feedback)
         console.log(feedbacks)
         return words.map(word => word.feedback)
     }
@@ -51,29 +54,29 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
         };
     }, []);
 
-    useEffect(() => {
-        console.log(getAllFeedbacks(words))
-    }, [words])
+    /*     useEffect(() => {
+            console.log(getAllFeedbacks(words))
+        }, [words]) */
 
     const checkWord = () => {
-        if (words[activeWord]?.word.length !== wordle?.getWordLength() || activeWord >= words.length) return
+        if (gameStatus !== "IN_GAME" || words[activeWord]?.word.length !== wordle?.getWordLength() || activeWord >= words.length) return
 
-        const newFeedback = wordle?.checkAnswer(words[activeWord].word)
+        const [isCorrect, newFeedback] = wordle?.checkAnswer(words[activeWord].word)
         setWords(prev => {
             const newWords = [...prev]
-            newWords[activeWord].feedback = newFeedback ?? []
+            newWords[activeWord].feedback = newFeedback ?? null
             return newWords
         })
 
         const newLetters = [...letters]
 
         newFeedback?.forEach((feedback, index) => {
-            if(feedback == "match"){
-                const letterIndex = newLetters.findIndex( letter => letter.letter.toUpperCase() === words[activeWord].word[index].toUpperCase())
+            if (feedback == "match") {
+                const letterIndex = newLetters.findIndex(letter => letter.letter.toUpperCase() === words[activeWord].word[index].toUpperCase())
                 newLetters[letterIndex].feedback = "match"
-            }else{
-                const letterIndex = newLetters.findIndex( letter => letter.letter === words[activeWord].word[index])
-                if(!newLetters[letterIndex].feedback){
+            } else {
+                const letterIndex = newLetters.findIndex(letter => letter.letter === words[activeWord].word[index])
+                if (!newLetters[letterIndex].feedback) {
                     newLetters[letterIndex].feedback = feedback
                 }
             }
@@ -81,12 +84,25 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
 
         setLetters(newLetters)
 
-        setActiveWord(prev => prev + 1)
+        if (isCorrect) {
+            setGameStatus("WIN")
+            console.log("ganaste")
+            return
+        }
+
+        const nextIndex = activeWord + 1
+        if (nextIndex >= words.length) {
+            setGameStatus("LOSE")
+            toast(wordle.getWord())
+            console.log("Perdiste")
+        }
+
+        setActiveWord(nextIndex)
     }
 
     const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newString = event.target.value.toUpperCase()
-        if (!isAlphabet(newString) || activeWord >= words.length) return
+        if (gameStatus !== "IN_GAME" || !isAlphabet(newString) || activeWord >= words.length) return
         setWords(prev => {
             const newWords = [...prev]
             newWords[activeWord].word = newString
@@ -103,7 +119,8 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
 
     const handleClickLetter = (l: string) => {
         const newString = words[activeWord]?.word + l.toUpperCase()
-        if (!isAlphabet(newString) || newString.length > wordle.getWordLength() || activeWord >= words.length) return
+        if (gameStatus !== "IN_GAME" || !isAlphabet(newString) || newString.length > wordle.getWordLength() || activeWord >= words.length) return
+
         setWords(prev => {
             const newWords = [...prev]
             newWords[activeWord].word = newString
@@ -113,7 +130,8 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
 
     const handleClickBackSpace = () => {
         const newString = words[activeWord]?.word.slice(0, words[activeWord]?.word.length - 1) + ""
-        if (!isAlphabet(newString) || newString.length > wordle.getWordLength() || activeWord >= words.length) return
+        if (gameStatus !== "IN_GAME" || !isAlphabet(newString) || newString.length > wordle.getWordLength() || activeWord >= words.length) return
+
         setWords(prev => {
             const newWords = [...prev]
             newWords[activeWord].word = newString
@@ -122,7 +140,7 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
     }
     return (
         <>
-            <div className="w-140 mx-auto border ">
+            <div className="max-w-140 h-full py-5 mx-auto border flex flex-col justify-between items-center">
                 <form onSubmit={handleSubmit} action="submit">
                     <input className="border border-white text-white sr-only"
                         ref={inputRef}
@@ -133,13 +151,13 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
                     />
                 </form>
 
-                <section className="flex flex-col gap-2 mt-30">
+                <section className="w-full flex flex-col gap-2">
                     {words.map((word, index) => (
                         <InputWord key={index} word={word} length={wordle?.getWordLength() ?? 0} />
                     ))}
 
                 </section>
-                <section className='mt-20'>
+                <section className='w-full'>
                     <div className='flex flex-col gap-1'>
                         <div className='flex gap-1'>
                             {row1.map((letter) => {
@@ -156,7 +174,7 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
                             })}
                         </div>
                         <div className='flex gap-1'>
-                            <div onClick={handleClickBackSpace} className={`flex-[1.5] cursor-pointer h-12 border-2 rounded-xl border-gray-600 flex items-center justify-center transition-all ease-out duration-300`}>
+                            <div onClick={handleClickBackSpace} className={`flex-[1.5] cursor-pointer h-12 border-2 rounded-xl border-gray-500 bg-gray-500 flex items-center justify-center transition-all ease-out duration-300`}>
                                 <img src={backspaceIcon} alt="Backspace" className="h-6" />
                             </div>
                             {row3.map((letter) => {
@@ -164,7 +182,7 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
                                     <Letter onClick={() => handleClickLetter(letter.letter)} key={letter.letter} letter={letter} />
                                 )
                             })}
-                            <div onClick={checkWord} className={`flex-[1.5] cursor-pointer h-12 border-2 rounded-xl border-gray-600 flex items-center justify-center transition-all ease-out duration-300`}>
+                            <div onClick={checkWord} className={`flex-[1.5] cursor-pointer h-12 border-2 rounded-xl border-gray-500 bg-gray-500 flex items-center justify-center transition-all ease-out duration-300`}>
                                 <span className="text-xl font-semibold text-white">ENTER</span>
                             </div>
                         </div>
@@ -173,6 +191,19 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
                 </section>
             </div>
             {/* <Modal word='TOMAR' feedbacks={getAllFeedbacks(words)}/> */}
+            <ToastContainer
+                position="top-center"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick={false}
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+                transition={Bounce}
+            />
         </>
     )
 }
