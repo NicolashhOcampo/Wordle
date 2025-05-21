@@ -9,17 +9,19 @@ import backspaceIcon from "../assets/backspace.svg";
 import { GameStatus } from '../types/gameStatus.type';
 import { Bounce, toast, ToastContainer } from 'react-toastify';
 
-const initialKeyboardState = "qwertyuiopasdfghjklñzxcvbnm".split("").map(letter => ({
-    letter: letter.toUpperCase(),
-    feedback: null
-}));
+
 
 export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
+    const initialKeyboardState = "qwertyuiopasdfghjklñzxcvbnm".split("").map(letter => ({
+        letter: letter.toUpperCase(),
+        feedback: null
+    }));
+
     const inputRef = useRef<HTMLInputElement | null>(null)
     const [gameStatus, setGameStatus] = useState<GameStatus>("IN_GAME")
     const [activeWord, setActiveWord] = useState(0)
     const [words, setWords] = useState<Word[]>(
-        Array.from({ length: 5 }, () => ({
+        Array.from({ length: 6 }, () => ({
             word: "",
             feedback: null
         }))
@@ -87,13 +89,14 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
         if (isCorrect) {
             setGameStatus("WIN")
             console.log("ganaste")
+            toast("GANASTE!")
             return
         }
 
         const nextIndex = activeWord + 1
         if (nextIndex >= words.length) {
             setGameStatus("LOSE")
-            toast(wordle.getWord())
+            toast(`Perdiste: ${wordle.getWord()}` )
             console.log("Perdiste")
         }
 
