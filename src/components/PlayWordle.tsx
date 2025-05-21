@@ -3,7 +3,7 @@ import { Letter as L, Word } from '../types/word.type';
 import { Wordle } from '../classes/Wordle';
 import { InputWord } from './InputWord';
 import { isAlphabet } from '../utils/stringUtils';
-import { Modal } from './Modal';
+//import { Modal } from './Modal';
 import { Letter } from './Letter';
 import backspaceIcon from "../assets/backspace.svg";
 import { GameStatus } from '../types/gameStatus.type';
@@ -33,11 +33,6 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
     const row2 = letters.slice(10, 20); // A - L
     const row3 = letters.slice(20);     // Z - M
 
-    const getAllFeedbacks = (words: Word[]) => {
-        const feedbacks = words.filter(word => word.feedback)
-        console.log(feedbacks)
-        return words.map(word => word.feedback)
-    }
 
     useEffect(() => {
 
