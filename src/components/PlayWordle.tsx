@@ -122,7 +122,7 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
     }
     return (
         <>
-            <div className="max-w-140 h-full py-5 mx-auto border flex flex-col justify-between items-center">
+            <div className="w-full h-full m-auto py-5 mx-auto border flex flex-col justify-between items-center">
 
                 <section className="w-full flex flex-col gap-2">
                     {words.map((word, index) => (

@@ -3,7 +3,7 @@ import { Link, Outlet } from "react-router";
 
 export default function Layout() {
   return (
-    <div className="h-full flex flex-col">
+    <div className="max-w-140 m-auto h-full flex flex-col">
       {/* Navbar común */}
       <nav className="w-full justify-between text-white p-4 m-auto flex gap-4">
         <Link to="/" className="hover:underline">Inicio</Link>
