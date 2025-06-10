@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Letter as L, Word } from '../types/word.type';
 import { Wordle } from '../classes/Wordle';
 import { InputWord } from './InputWord';
@@ -10,14 +10,14 @@ import { GameStatus } from '../types/gameStatus.type';
 import { Bounce, toast, ToastContainer } from 'react-toastify';
 
 
+const keyBoardLetters = "qwertyuiopasdfghjklñzxcvbnm"
 
 export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
-    const initialKeyboardState = "qwertyuiopasdfghjklñzxcvbnm".split("").map(letter => ({
+    const initialKeyboardState = keyBoardLetters.split("").map(letter => ({
         letter: letter.toUpperCase(),
         feedback: null
     }));
 
-    const inputRef = useRef<HTMLInputElement | null>(null)
     const [gameStatus, setGameStatus] = useState<GameStatus>("IN_GAME")
     const [activeWord, setActiveWord] = useState(0)
     const [words, setWords] = useState<Word[]>(
@@ -34,26 +34,26 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
     const row3 = letters.slice(20);     // Z - M
 
 
+    const handleKeyDown = useCallback(  (e: KeyboardEvent) => {
+        if (gameStatus !== "IN_GAME") return;
+
+        const key = e.key.toUpperCase();
+        if (key === "BACKSPACE") {
+            handleClickBackSpace();
+        } else if (key === "ENTER") {
+            checkWord();
+        } else if (key.length === 1 && isAlphabet(key)) {
+            handleClickLetter(key);
+        }
+    }, [gameStatus, activeWord, words, letters]); // Added dependencies to ensure the function is updated correctly
     useEffect(() => {
 
-        console.log("montado")
-        const handleClick = () => {
-            inputRef.current?.focus();
-        };
-
-        document.addEventListener("click", handleClick);
-
-        inputRef.current?.focus();
-
+        document.addEventListener("keydown", handleKeyDown);
         return () => {
-            document.removeEventListener("click", handleClick);
-            console.log("desmontado")
+            document.removeEventListener("keydown", handleKeyDown);
         };
-    }, []);
+    }, [handleKeyDown]);
 
-    /*     useEffect(() => {
-            console.log(getAllFeedbacks(words))
-        }, [words]) */
 
     const checkWord = () => {
         if (gameStatus !== "IN_GAME" || words[activeWord]?.word.length !== wordle?.getWordLength() || activeWord >= words.length) return
@@ -91,29 +91,13 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
         const nextIndex = activeWord + 1
         if (nextIndex >= words.length) {
             setGameStatus("LOSE")
-            toast(`Perdiste: ${wordle.getWord()}` )
+            toast(`Perdiste: ${wordle.getWord()}`)
             console.log("Perdiste")
         }
 
         setActiveWord(nextIndex)
     }
 
-    const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newString = event.target.value.toUpperCase()
-        if (gameStatus !== "IN_GAME" || !isAlphabet(newString) || activeWord >= words.length) return
-        setWords(prev => {
-            const newWords = [...prev]
-            newWords[activeWord].word = newString
-            return newWords
-        })
-    }
-
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-
-        checkWord()
-
-    }
 
     const handleClickLetter = (l: string) => {
         const newString = words[activeWord]?.word + l.toUpperCase()
@@ -139,15 +123,6 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
     return (
         <>
             <div className="max-w-140 h-full py-5 mx-auto border flex flex-col justify-between items-center">
-                <form onSubmit={handleSubmit} action="submit">
-                    <input className="border border-white text-white sr-only"
-                        ref={inputRef}
-                        type="text"
-                        maxLength={wordle?.getWordLength() ?? 0}
-                        value={words[activeWord]?.word ?? ""}
-                        onChange={handleChangeInput}
-                    />
-                </form>
 
                 <section className="w-full flex flex-col gap-2">
                     {words.map((word, index) => (
@@ -172,7 +147,7 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
                             })}
                         </div>
                         <div className='flex gap-1'>
-                            <div onClick={handleClickBackSpace} className={`flex-[1.5] cursor-pointer h-12 border-2 rounded-xl border-gray-500 bg-gray-500 flex items-center justify-center transition-all ease-out duration-300`}>
+                            <div onClick={handleClickBackSpace} className={`flex-[1.5] cursor-pointer h-12 border-2 rounded-xs border-gray-500 bg-gray-500 flex items-center justify-center transition-all ease-out duration-300`}>
                                 <img src={backspaceIcon} alt="Backspace" className="h-6" />
                             </div>
                             {row3.map((letter) => {
@@ -180,7 +155,7 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
                                     <Letter onClick={() => handleClickLetter(letter.letter)} key={letter.letter} letter={letter} />
                                 )
                             })}
-                            <div onClick={checkWord} className={`flex-[1.5] cursor-pointer h-12 border-2 rounded-xl border-gray-500 bg-gray-500 flex items-center justify-center transition-all ease-out duration-300`}>
+                            <div onClick={checkWord} className={`flex-[1.5] cursor-pointer h-12 border-2 rounded-xs border-gray-500 bg-gray-500 flex items-center justify-center transition-all ease-out duration-300`}>
                                 <span className="text-xl font-semibold text-white">ENTER</span>
                             </div>
                         </div>
