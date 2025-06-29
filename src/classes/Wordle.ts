@@ -29,7 +29,7 @@ export class Wordle {
         }
 
         const copy_word_list = this.word.toUpperCase().split("")
-        let feedback:FeedBack[] = []
+        const feedback:FeedBack[] = []
 
         inputWord.toUpperCase().split("").forEach((letter, index) => {
             if (!(copy_word_list.includes(letter))){

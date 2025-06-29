@@ -34,7 +34,7 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
     const row3 = letters.slice(20);     // Z - M
 
 
-    const handleKeyDown = useCallback(  (e: KeyboardEvent) => {
+    const handleKeyDown = useCallback((e: KeyboardEvent) => {
         if (gameStatus !== "IN_GAME") return;
 
         const key = e.key.toUpperCase();
@@ -58,7 +58,7 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
     const checkWord = () => {
         if (gameStatus !== "IN_GAME" || words[activeWord]?.word.length !== wordle?.getWordLength() || activeWord >= words.length) return
 
-        const [isCorrect, newFeedback] = wordle?.checkAnswer(words[activeWord].word)
+        const [isCorrect, newFeedback] = wordle?.checkAnswer(words[activeWord].word) || [false, null]
         setWords(prev => {
             const newWords = [...prev]
             newWords[activeWord].feedback = newFeedback ?? null
