@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import { Wordle } from "../classes/Wordle";
 import { PlayWordle } from "../components/PlayWordle";
 import { formatWord } from "../utils/stringUtils";
+import { Spinner } from "../components/Spinner";
 
 export const PlayRandomWordle = () => {
   const [secretWord, setSecretWord] = useState("");
@@ -15,7 +16,7 @@ export const PlayRandomWordle = () => {
   }, [])
 
 
-  if(wordle.getWordLength() < 1) return null
+  if(wordle.getWordLength() < 1) return <Spinner />
 
   return (
     <>
