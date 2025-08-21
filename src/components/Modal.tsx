@@ -1,22 +1,31 @@
-import { useEffect } from "react"
 import { Word } from "../types/word.type"
+import { SmallFeedback } from "./SmallFeedback"
 
-export const Modal = ({words}:{words:Word[]}) => {
+interface ModalProps {
+  correctWord: string,
+  words: Word[],
+  onClose: () => void
+}
 
-  useEffect(()=>{
-    console.log(words)
-  }, [])
+export const Modal = ({ correctWord, words, onClose }: ModalProps) => {
+
+
 
   return (
-    <div className="z-10 absolute top-0 left-0 w-full h-full flex justify-center items-center">
-        <div className="w-70 h-50 flex flex-col pt-3 items-center bg-gray-700 rounded-3xl">
-            <h2 className="text-white text-2xl">GANASTE!</h2>
-            <span className="text-white text-2xl mt-2">Hola</span>
 
-            <div>
-
-            </div>
+    <div className="fixed top-0 left-0 w-dvw h-dvh bg-black/40 flex items-center justify-center">
+      <div className="w-70 h-80 rounded-2xl bg-gray-700 p-2 flex flex-col items-center">
+        <div className="w-full flex justify-end">
+          <button type="button" onClick={onClose} className="text-white p-3 size-8 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-600">X</button>
         </div>
+        <h2 className="text-white text-2xl font-bold">WORDLE</h2>
+        <p className="text-gray-300 text-lg mt-2">Palabra: <span className="font-semibold">{correctWord}</span></p>
+        <div className="flex flex-col gap-2 mt-8">
+          {words.map((word, index) => (
+            <SmallFeedback key={index} word={word} />
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

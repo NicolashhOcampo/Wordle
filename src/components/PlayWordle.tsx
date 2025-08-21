@@ -3,16 +3,18 @@ import { Letter as L, Word } from '../types/word.type';
 import { Wordle } from '../classes/Wordle';
 import { InputWord } from './InputWord';
 import { isAlphabet } from '../utils/stringUtils';
-//import { Modal } from './Modal';
 import { Letter } from './Letter';
 import backspaceIcon from "../assets/backspace.svg";
 import { GameStatus } from '../types/gameStatus.type';
 import { Bounce, toast, ToastContainer } from 'react-toastify';
+import { Modal } from './Modal';
 
 
 const keyBoardLetters = "qwertyuiopasdfghjklñzxcvbnm"
 
 export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
+    const [modalOpen, setModalOpen] = useState(false);
+
     const initialKeyboardState = keyBoardLetters.split("").map(letter => ({
         letter: letter.toUpperCase(),
         feedback: null
@@ -32,28 +34,6 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
     const row1 = letters.slice(0, 10);  // Q - P
     const row2 = letters.slice(10, 20); // A - L
     const row3 = letters.slice(20);     // Z - M
-
-
-    const handleKeyDown = useCallback((e: KeyboardEvent) => {
-        if (gameStatus !== "IN_GAME") return;
-
-        const key = e.key.toUpperCase();
-        if (key === "BACKSPACE") {
-            handleClickBackSpace();
-        } else if (key === "ENTER") {
-            checkWord();
-        } else if (key.length === 1 && isAlphabet(key)) {
-            handleClickLetter(key);
-        }
-    }, [gameStatus, activeWord, words, letters]); // Added dependencies to ensure the function is updated correctly
-    useEffect(() => {
-
-        document.addEventListener("keydown", handleKeyDown);
-        return () => {
-            document.removeEventListener("keydown", handleKeyDown);
-        };
-    }, [handleKeyDown]);
-
 
     const checkWord = () => {
         if (gameStatus !== "IN_GAME" || words[activeWord]?.word.length !== wordle?.getWordLength() || activeWord >= words.length) return
@@ -85,6 +65,7 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
             setGameStatus("WIN")
             console.log("ganaste")
             toast("GANASTE!")
+            setModalOpen(true);
             return
         }
 
@@ -98,6 +79,16 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
         setActiveWord(nextIndex)
     }
 
+    const handleClickBackSpace = () => {
+        const newString = words[activeWord]?.word.slice(0, words[activeWord]?.word.length - 1) + ""
+        if (gameStatus !== "IN_GAME" || !isAlphabet(newString) || newString.length > wordle.getWordLength() || activeWord >= words.length) return
+
+        setWords(prev => {
+            const newWords = [...prev]
+            newWords[activeWord].word = newString
+            return newWords
+        })
+    }
 
     const handleClickLetter = (l: string) => {
         const newString = words[activeWord]?.word + l.toUpperCase()
@@ -110,16 +101,28 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
         })
     }
 
-    const handleClickBackSpace = () => {
-        const newString = words[activeWord]?.word.slice(0, words[activeWord]?.word.length - 1) + ""
-        if (gameStatus !== "IN_GAME" || !isAlphabet(newString) || newString.length > wordle.getWordLength() || activeWord >= words.length) return
+    const handleKeyDown = useCallback((e: KeyboardEvent) => {
+        if (gameStatus !== "IN_GAME") return;
 
-        setWords(prev => {
-            const newWords = [...prev]
-            newWords[activeWord].word = newString
-            return newWords
-        })
-    }
+        const key = e.key.toUpperCase();
+        if (key === "BACKSPACE") {
+            handleClickBackSpace();
+        } else if (key === "ENTER") {
+            checkWord();
+        } else if (key.length === 1 && isAlphabet(key)) {
+            handleClickLetter(key);
+        }
+    }, [gameStatus, activeWord, words, letters]); // Added dependencies to ensure the function is updated correctly
+
+
+    useEffect(() => {
+
+        document.addEventListener("keydown", handleKeyDown);
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [handleKeyDown]);
+
     return (
         <>
             <div className="w-full h-full m-auto py-5 mx-auto border flex flex-col justify-between items-center">
@@ -163,7 +166,7 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
 
                 </section>
             </div>
-            {/* <Modal word='TOMAR' feedbacks={getAllFeedbacks(words)}/> */}
+            {modalOpen && <Modal correctWord={wordle.getWord()} words={words} onClose={() => setModalOpen(false)} />}
             <ToastContainer
                 position="top-center"
                 autoClose={3000}
