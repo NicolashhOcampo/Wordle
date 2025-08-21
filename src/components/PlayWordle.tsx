@@ -64,16 +64,22 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
         if (isCorrect) {
             setGameStatus("WIN")
             console.log("ganaste")
-            toast("GANASTE!")
-            setModalOpen(true);
+
+            setTimeout(() => {
+                toast("GANASTE!")
+                setModalOpen(true);
+            }, 1000);
             return
         }
 
         const nextIndex = activeWord + 1
         if (nextIndex >= words.length) {
             setGameStatus("LOSE")
-            toast(`Perdiste: ${wordle.getWord()}`)
-            console.log("Perdiste")
+
+            setTimeout(() => {
+                toast(`Perdiste: ${wordle.getWord()}`)
+                setModalOpen(true);
+            }, 1000);
         }
 
         setActiveWord(nextIndex)
