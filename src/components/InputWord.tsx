@@ -7,9 +7,8 @@ export const InputWord = ({ word, length }: { word: Word, length: number }) => {
   return (
     <div className="w-full flex justify-center gap-1 text-white">
       {formatValue.split("").map((l, index) => (
-        <FlipLetter letter={l} feedback={word.feedback?.[index]} delay={index * 100} />
-      )
-      )}
+        <FlipLetter key={index} letter={l} feedback={word.feedback?.[index]} delay={index * 100} />
+      ))}
     </div>
   )
 }

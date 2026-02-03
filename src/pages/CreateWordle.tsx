@@ -32,7 +32,6 @@ export const CreateWordle = () => {
             await navigator.clipboard.writeText(`${base_url}/playCustom/${vigenere(inputValue, secretKey)}`)
             setLink(`${base_url}/playCustom/${vigenere(inputValue, secretKey)}`)
             toast("Link copiado en el portapeles!")
-            console.log("Link copiado")
         } catch (e) {
             console.log(e)
         }

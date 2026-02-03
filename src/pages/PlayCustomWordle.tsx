@@ -4,6 +4,7 @@ import { PlayWordle } from '../components/PlayWordle'
 import { useEffect, useState } from 'react'
 import { isAlphabet } from '../utils/stringUtils'
 import { vigenere } from '../utils/vigenere'
+import words from "an-array-of-spanish-words"
 const secretKey: string = import.meta.env.VITE_SECRET_KEY;
 
 export const PlayCustomWordle = () => {
@@ -13,22 +14,20 @@ export const PlayCustomWordle = () => {
 
     useEffect(() => {
         if (!word) {
-            console.log("No hay")
             navigate("/create")
             return
         }
         const decryptedWord = vigenere(word, secretKey, -1)
 
-        if (decryptedWord.length < 1 || !isAlphabet(decryptedWord)) {
-            console.log("No hay")
+        if (decryptedWord.length < 1 || !isAlphabet(decryptedWord) || !words.includes(decryptedWord.toLowerCase())) {
             navigate("/create")
             return
         }
         setWordle(new Wordle(decryptedWord))
 
     }, []);
-    
+
     return (
-        <PlayWordle wordle={wordle ?? new Wordle("Error")} />
+        <PlayWordle wordle={wordle ?? new Wordle("Error")} listWords={words.filter(word => word.length === wordle?.getWordLength())} />
     )
 }
