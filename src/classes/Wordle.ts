@@ -1,54 +1,53 @@
 import { FeedBack } from "../types/word.type";
 
 export class Wordle {
-    private word:string
+    private word: string
 
-    constructor(word:string) {
+    constructor(word: string) {
         this.word = word.toUpperCase();
     }
 
-    getWordLength(){
+    getWordLength() {
         return this.word.length
     }
 
-    setWord(newWord:string){
+    setWord(newWord: string) {
         this.word = newWord
     }
 
-    getWord(){
+    getWord() {
         return this.word
     }
 
-    checkAnswer(inputWord:string):[boolean, FeedBack[] | null] {
-        if(this.word.length !== inputWord.length){
+    checkAnswer(inputWord: string): [boolean, FeedBack[] | null] {
+        if (this.word.length !== inputWord.length) {
             return [false, null]
         }
 
-        if(this.word.toUpperCase() === inputWord.toUpperCase()) {
-            return [true, Array.from({length: this.word.length}, () => "match")]
+        if (this.word.toUpperCase() === inputWord.toUpperCase()) {
+            return [true, Array.from({ length: this.word.length }, () => "match")]
         }
 
         const copy_word_list = this.word.toUpperCase().split("")
-        const feedback:FeedBack[] = []
+        const feedback: FeedBack[] = []
 
         inputWord.toUpperCase().split("").forEach((letter, index) => {
-            if (!(copy_word_list.includes(letter))){
+            if (!(copy_word_list.includes(letter))) {
                 feedback.push("wrong")
-            }else if (letter === copy_word_list[index]){
+            } else if (letter === copy_word_list[index]) {
                 feedback.push("match")
                 copy_word_list[index] = "-"
-            }else{
+            } else {
                 feedback.push("misplaced")
             }
         })
-        console.log("feedback antes: ", feedback)
+
         feedback.forEach((f, index) => {
-            if(f === "misplaced"){
-                if(copy_word_list.includes(inputWord[index])){
-                    console.log("letra: ", inputWord[index])
-                    const indexLetter = copy_word_list.findIndex((letter)=>(letter === inputWord[index]))
+            if (f === "misplaced") {
+                if (copy_word_list.includes(inputWord[index])) {
+                    const indexLetter = copy_word_list.findIndex((letter) => (letter === inputWord[index]))
                     copy_word_list[indexLetter] = "-"
-                }else{
+                } else {
                     feedback[index] = "wrong"
                 }
             }

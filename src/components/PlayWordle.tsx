@@ -12,7 +12,7 @@ import { Modal } from './Modal';
 
 const keyBoardLetters = "qwertyuiopasdfghjklñzxcvbnm"
 
-export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
+export const PlayWordle = ({ wordle, listWords }: { wordle: Wordle, listWords?: string[] }) => {
     const [modalOpen, setModalOpen] = useState(false);
 
     const initialKeyboardState = keyBoardLetters.split("").map(letter => ({
@@ -37,6 +37,11 @@ export const PlayWordle = ({ wordle }: { wordle: Wordle }) => {
 
     const checkWord = () => {
         if (gameStatus !== "IN_GAME" || words[activeWord]?.word.length !== wordle?.getWordLength() || activeWord >= words.length) return
+
+        if (listWords && !listWords.includes(words[activeWord].word.toLowerCase())) {
+            toast("Palabra no valida")
+            return
+        }
 
         const [isCorrect, newFeedback] = wordle?.checkAnswer(words[activeWord].word) || [false, null]
         setWords(prev => {

@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './pages/PlayRandonWordle.tsx'
+import { PlayRandomWordle } from './pages/PlayRandonWordle.tsx'
 import { BrowserRouter, Route, Routes } from 'react-router'
 import { CreateWordle } from './pages/CreateWordle.tsx'
 import { PlayCustomWordle } from './pages/PlayCustomWordle.tsx'
@@ -13,7 +13,7 @@ createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />} >
-          <Route index element={<App />} />
+          <Route index element={<PlayRandomWordle />} />
           <Route path="create" element={<CreateWordle />} />
           <Route path="playCustom/:word" element={<PlayCustomWordle />} />
           <Route path="*" element={<NotFound />} />
