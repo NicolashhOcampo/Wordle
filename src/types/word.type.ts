@@ -6,6 +6,6 @@ export interface Word {
 }
 
 export interface Letter {
-    letter: string,
+    text: string,
     feedback: null | FeedBack
 }
