@@ -7,11 +7,11 @@ interface FlipLetterProps {
 }
 
 export const FlipLetter = ({ letter, feedback, delay }: FlipLetterProps) => {
-
+    const hasText = letter.trim().length > 0
     const bg = !feedback ? "" : feedback === "match" ? " bg-green-600 border-green-600" : feedback === "misplaced" ? " bg-yellow-500 border-yellow-500" : " bg-gray-700 border-gray-700";
 
     return (
-        <div className="md:size-15 size-12 perspective-midrange">
+        <div className={`${hasText ? "animate-pop-letter" : ""} md:size-15 size-12 perspective-midrange`}>
             <div className={`relative w-full h-full transition-transform duration-600 transform-3d ${feedback ? "-rotate-x-180" : ""}`}
                 style={{ transitionDelay: `${delay}ms` }}
             >

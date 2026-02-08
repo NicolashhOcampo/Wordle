@@ -16,7 +16,7 @@ export const PlayWordle = ({ wordle, listWords }: { wordle: Wordle, listWords?: 
     const [modalOpen, setModalOpen] = useState(false);
 
     const initialKeyboardState = keyBoardLetters.split("").map(letter => ({
-        letter: letter.toUpperCase(),
+        text: letter.toUpperCase(),
         feedback: null
     }));
 
@@ -54,10 +54,10 @@ export const PlayWordle = ({ wordle, listWords }: { wordle: Wordle, listWords?: 
 
         newFeedback?.forEach((feedback, index) => {
             if (feedback == "match") {
-                const letterIndex = newLetters.findIndex(letter => letter.letter.toUpperCase() === words[activeWord].word[index].toUpperCase())
+                const letterIndex = newLetters.findIndex(letter => letter.text.toUpperCase() === words[activeWord].word[index].toUpperCase())
                 newLetters[letterIndex].feedback = "match"
             } else {
-                const letterIndex = newLetters.findIndex(letter => letter.letter === words[activeWord].word[index])
+                const letterIndex = newLetters.findIndex(letter => letter.text === words[activeWord].word[index])
                 if (!newLetters[letterIndex].feedback) {
                     newLetters[letterIndex].feedback = feedback
                 }
@@ -149,14 +149,14 @@ export const PlayWordle = ({ wordle, listWords }: { wordle: Wordle, listWords?: 
                         <div className='flex gap-1'>
                             {row1.map((letter) => {
                                 return (
-                                    <Letter onClick={() => handleClickLetter(letter.letter)} key={letter.letter} letter={letter} />
+                                    <Letter onClick={() => handleClickLetter(letter.text)} key={letter.text} letter={letter} />
                                 )
                             })}
                         </div>
                         <div className='flex gap-1'>
                             {row2.map((letter) => {
                                 return (
-                                    <Letter onClick={() => handleClickLetter(letter.letter)} key={letter.letter} letter={letter} />
+                                    <Letter onClick={() => handleClickLetter(letter.text)} key={letter.text} letter={letter} />
                                 )
                             })}
                         </div>
@@ -166,7 +166,7 @@ export const PlayWordle = ({ wordle, listWords }: { wordle: Wordle, listWords?: 
                             </div>
                             {row3.map((letter) => {
                                 return (
-                                    <Letter onClick={() => handleClickLetter(letter.letter)} key={letter.letter} letter={letter} />
+                                    <Letter onClick={() => handleClickLetter(letter.text)} key={letter.text} letter={letter} />
                                 )
                             })}
                             <div onClick={checkWord} className={`flex-[1.5] cursor-pointer h-12 border-2 rounded-xs border-gray-500 bg-gray-500 flex items-center justify-center transition-all ease-out duration-300`}>
