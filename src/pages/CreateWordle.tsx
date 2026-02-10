@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { isAlphabet } from "../utils/stringUtils";
 import { vigenere } from "../utils/vigenere";
 import { Bounce, toast, ToastContainer } from "react-toastify";
+import words from "an-array-of-spanish-words"
 const secretKey: string = import.meta.env.VITE_SECRET_KEY;
 const base_url: string = import.meta.env.VITE_BASE_URL
 export const CreateWordle = () => {
@@ -18,20 +19,25 @@ export const CreateWordle = () => {
 
     const handlePlay = () => {
 
-        if (!isAlphabet(inputValue)) return
-
+        if (!words.includes(inputValue.toLowerCase())) {
+            toast.error("Palabra no valida")
+            return
+        }
 
 
         navigate(`/playCustom/${vigenere(inputValue, secretKey)}`)
     }
 
     const handleCreateLink = async () => {
-        if (!isAlphabet(inputValue)) return
+        if (!words.includes(inputValue.toLowerCase())) {
+            toast.error("Palabra no valida")
+            return
+        }
 
         try {
             await navigator.clipboard.writeText(`${base_url}/playCustom/${vigenere(inputValue, secretKey)}`)
             setLink(`${base_url}/playCustom/${vigenere(inputValue, secretKey)}`)
-            toast("Link copiado en el portapeles!")
+            toast.success("Link copiado en el portapeles!")
         } catch (e) {
             console.log(e)
         }
@@ -44,7 +50,7 @@ export const CreateWordle = () => {
                 <h2 className="text-center text-white text-2xl font-semibold uppercase">Ingrese una palabra</h2>
 
                 <div className="mt-auto flex flex-col items-center gap-2">
-                    <p className="mt-8 text-center text-white">Maximos de 8 letras</p>
+                    <p className="mt-8 text-center text-white">Máximo de 8 letras</p>
                     <input
                         type="text"
                         value={inputValue}
